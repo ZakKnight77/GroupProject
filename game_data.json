@@ -1,0 +1,60 @@
+
+{
+	"Room1": 
+	{
+		"description": "This is Room1, it leads to Room2 and Room3, and it has items in it...",
+		"end_game": false,
+		"needed_item": "",
+		"items": {
+			"Item1": 
+			{
+				"description": "This is an item, it can go in the inventory.",
+				"collectible": true
+			},
+			"Item2": 
+			{
+				"description": "This is an item that cannot go in the inventory.",
+				"collectible": false
+			}
+		},
+		"directions": 
+		{
+			"N": "Room2",
+			"E": "Room3"
+		}
+	},
+	"Room2": 
+	{
+		"description": "This is Room2, here the game ends, therefore the items + directions should not be interacted with...",
+		"end_game": true,
+		"needed_item": "Torch",
+		"items": {},
+		"directions": {}
+	},
+	"Room3": 
+	{
+		"description": "Here is Room3, it leads to Room2",
+		"needed_item": "",
+		"end_game": false,
+		"items": 
+		{
+			"Torch": 
+			{
+				"description": "Emits light...",
+				"collectible": false
+			},
+			"Key": 
+			{
+				"description": "Key to unlock a door...",
+				"collectible": true
+			}
+		},
+		"directions": 
+		{
+			"N": "Room2"
+		}
+	}
+}
+
+
+

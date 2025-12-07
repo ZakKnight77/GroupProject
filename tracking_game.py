@@ -35,29 +35,6 @@ class GameState:
             return f"{target['description']} (Game over)"
 
         return f"In {next_room}"
-
-    def get_item(self, item: str) -> str:
-        """Pick up an item"""
-        room = self.world[self.current_room]
-        items = room.get("items", {})
-        if item not in items:
-            return f"There is no {item} here"
-        if not items[item].get("collectible", False):
-            return f"You cannot collect this {item}"
-        self.inventory.append(item)
-        del items[item]
-        return f"{item} has been picked up"
-    
-    def drop_item(self, item: str) -> str:
-        """Drop an item"""
-        if item not in self.inventory:
-            return f"{item} not here"
-        self.inventory.remove(item)
-        self.world[self.current_room].setdefault("items", {})[item] = {
-            "description": "Dropped item",
-            "collectible": True
-        }
-        return f"{item} has been dropped"
     
     def look(self) -> str:
         """Describe current room"""
@@ -72,3 +49,4 @@ class GameState:
     def show_inventory(self) -> str:
         """Show inventory"""
         return "Inventory-" + (",".join(self.inventory) if self.inventory else "empty")
+

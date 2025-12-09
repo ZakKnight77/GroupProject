@@ -1,4 +1,5 @@
-import json
+from global_constants import DIRECTION_GAME_OVER_CODE, DIRECTION_MOVE_FAIL_CODE, DIRECTION_SUCCESS_CODE
+
 
 class GameState:
     def __init__(self, world: dict, start_room: str="Room1"):
@@ -10,11 +11,11 @@ class GameState:
         """Current room"""
         return self.current_room
     
-    def move_to(self, direction: str) -> str:
+    def move_to(self, direction: str) -> tuple:  # returns str message and int code needed in main
         room = self.world[self.current_room]
         exits = room.get("directions", {})
         if direction not in exits:
-            return "You cannot go that way"
+            return "You cannot go that way", DIRECTION_MOVE_FAIL_CODE
 
         next_room = exits[direction]
         target = self.world[next_room]
@@ -27,14 +28,14 @@ class GameState:
                 if needed_item in room.get("items", {}) and not room["items"][needed_item]["collectible"]:
                     self.current_room = next_room
                 else:
-                    return f"The item that is required is {needed_item} to proceed to {next_room}"
+                    return f"The item that is required is {needed_item} to proceed to {next_room}", DIRECTION_MOVE_FAIL_CODE
         else:
             self.current_room = next_room
 
         if target.get("end_game", False):
-            return f"{target['description']} (Game over)"
+            return f"{target['description']} (Game over)", DIRECTION_GAME_OVER_CODE
 
-        return f"In {next_room}"
+        return f"In {next_room}", DIRECTION_SUCCESS_CODE
     
     def look(self) -> str:
         """Describe current room"""
@@ -49,4 +50,3 @@ class GameState:
     def show_inventory(self) -> str:
         """Show inventory"""
         return "Inventory-" + (",".join(self.inventory) if self.inventory else "empty")
-

@@ -1,47 +1,41 @@
-#data from other peoples scripts (temporary for testing purposes)
-current_room = "Room1" #placeholder
-inventory = []
-#I'm assuming the json data is stored as 'game_data' so it's written as such here
-""""""
 
-#FOR THOSE LOOKING THIS OVER- this will need to implement Nicoletas self.inventory thing but im not>
-#>100% sure how it works? We'll have a meeting to resolve it + understand how the files can access each other
-
-#I do not understand how to reference variables from other scripts overall. halp.
-
-def AddItem(item):
-        if (inventory.length == 5):
-            return "Inventory full, choose an item to drop."
-        else:  
-            inventory.append(item)
+def AddItem(inventory, item):
+    '''Adds new item, max size of 5 (0-4)'''
+    if (inventory.length == 5):
+        return "Inventory full, choose an item to drop."
+    else:  
+        inventory.append(item)
         
         
-def RemoveItem(item):
-        if (inventory.length == 0):
-            #Ideally this wont happen unless theres a mistake somewhere
-            return "Inventory empty, nothing to remove."
-        else:
-            #Removes first instance of item found
-            for index in inventory:
-                if index == item:
-                    inventory.remove(index)
-                    break
-                else:
-                     print(f"Attempted to remove {item} from inventory, could not be found.")
+def RemoveItem(inventory, item):
+    '''Removes item from inventory, does nothing else with it'''
+    if (inventory.length == 0):
+        #Ideally this wont happen unless theres a mistake somewhere
+        return "Inventory empty, nothing to remove."
+    else:
+        #Removes first instance of item found
+        for index in inventory:
+            if index == item:
+                inventory.remove(index)
+                break
+            else:
+                print(f"Attempted to remove {item} from inventory, could not be found.")
         
-def PickUpItem(item):
-        game_data[current_room[items]].remove(item)
-        AddItem(item)
+def PickUpItem(current_room, item):
+    '''Removes target from the room and calls AddItem'''
+    current_room[items].remove(item)
+    AddItem(item)
         
-def DropItem(item, current_room):
-    #May need to add UI display and user input to choose item to drop, if that isnt someone elses task already
+def DropItem(current_room, item):
+    '''Calls RemoveItem and put target into the current rooms list of items'''
     if (InventoryContains(item) == False):
         return (f"Cannot drop {item}, not in inventory.") #shouldn't happen if UI input works correctly
     RemoveItem(item)
-    game_data[current_room[items]].append(item)
+    current_room[items].append(item)
         
 
-def InventoryContains(item):
+def InventoryContains(inventory, item):
+    '''Checks if item is in inventory, subject to change'''
     for index in inventory:
         if index == item:
             return True

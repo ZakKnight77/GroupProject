@@ -34,9 +34,9 @@ def DropItem(current_room, item):
     current_room[items].append(item)
         
 
-def InventoryContains(inventory, item):
-    '''Checks if item is in inventory, subject to change'''
+def InventoryContains(inventory, itemname):
+    '''Checks if item is in inventory, Item name passed is a string, not the item object'''
     for index in inventory:
-        if index == item:
+        if index[0:itemname.len-1] == itemname:
             return True
     return False

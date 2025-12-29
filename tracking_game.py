@@ -1,8 +1,9 @@
 from global_constants import DIRECTION_GAME_OVER_CODE, DIRECTION_MOVE_FAIL_CODE, DIRECTION_SUCCESS_CODE
+from inventory_actions import AddItem, RemoveItem, PickUpItem, DropItem, InventoryContains
 
 
 class GameState:
-    def __init__(self, world: dict, start_room: str="Room1"):
+    def __init__(self, world: dict, start_room: str = "Room1"):
         self.world = world
         self.current_room = start_room
         self.inventory = []
@@ -11,7 +12,7 @@ class GameState:
         """Current room"""
         return self.current_room
     
-    def move_to(self, direction: str) -> tuple:  # returns str message and int code needed in main
+    def move_to(self, direction: str) -> tuple:
         room = self.world[self.current_room]
         exits = room.get("directions", {})
         if direction not in exits:
@@ -22,13 +23,16 @@ class GameState:
         needed_item = target.get("needed_item", "")
 
         if needed_item:
-            if needed_item in self.inventory:
+            if  self.has_item(needed_item):
                 self.current_room = next_room
             else:
                 if needed_item in room.get("items", {}) and not room["items"][needed_item]["collectible"]:
                     self.current_room = next_room
                 else:
-                    return f"The item that is required is {needed_item} to proceed to {next_room}", DIRECTION_MOVE_FAIL_CODE
+                    return (
+                        f"The item that is required is {needed_item} to proceed to {next_room}",
+                        DIRECTION_MOVE_FAIL_CODE
+                    )
         else:
             self.current_room = next_room
 
@@ -38,7 +42,6 @@ class GameState:
         return f"In {next_room}", DIRECTION_SUCCESS_CODE
     
     def look(self) -> str:
-        """Describe current room"""
         room = self.world[self.current_room]
         desc = room.get("description", "")
         items = room.get("items", {})
@@ -48,5 +51,22 @@ class GameState:
         return f"{desc}\nItems are: {item_list}\nExits: {exit_list}"
     
     def show_inventory(self) -> str:
-        """Show inventory"""
-        return "Inventory-" + (",".join(self.inventory) if self.inventory else "empty")
+        return "Inventory- " + (",".join(self.inventory) if self.inventory else "empty")
+    
+    def add_item(self, item):
+        return AddItem(self.inventory, item)
+
+    def remove_item(self, item):
+        return RemoveItem(self.inventory, item)
+
+    def pick_up(self, item):
+        room = self.world[self.current_room]
+        return PickUpItem(room, self.inventory, item)
+
+    def drop(self, item):
+        room = self.world[self.current_room]
+        return DropItem(room, self.inventory, item)
+
+    def has_item(self, item):
+        return InventoryContains(self.inventory, item)
+

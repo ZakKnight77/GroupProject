@@ -53,7 +53,8 @@ class GameState:
                     self.current_room = next_room_name
                 else:
                     return (
-                        f"The item that is required is {needed_item} to proceed to {next_room_name}",
+                        f"The item that is required is {needed_item} to proceed to {next_room_name}\n"
+                        f"Another room may have the item that you need in order to continue",
                         DIRECTION_MOVE_FAIL_CODE,
                     )
         else:
@@ -105,5 +106,6 @@ class GameState:
 
     def has_item(self, item):
         return InventoryContains(self.inventory, item)
+
 
 

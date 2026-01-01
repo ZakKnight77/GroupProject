@@ -1,3 +1,7 @@
+"""
+This handles the player movement, inventory actions, and room logic for the game engine.
+"""
+
 from global_constants import (
     DIRECTION_GAME_OVER_CODE,
     DIRECTION_MOVE_FAIL_CODE,
@@ -7,44 +11,45 @@ from inventory_actions import AddItem, RemoveItem, PickUpItem, DropItem, Invento
 
 
 class GameState:
+    """Tracks the player's current room, inventory, and handles game logic."""
+
     def __init__(self, world: dict, start_room: str = "Room1"):
         self.world = world
         self.current_room = start_room
         self.inventory = []
 
     def get_current_room(self) -> str:
-        """Current room"""
+        """Returns the player's current room name."""
         return self.current_room
 
     def move_to(self, direction: str) -> tuple:
         """
         Attempts to move the player in the given direction.
-        Returns (message: str, status_code: int).
+        Returns (message, status_code).
         """
         room = self.world.get(self.current_room)
         if room is None or not isinstance(room, dict):
             return "You cannot go that way", DIRECTION_MOVE_FAIL_CODE
 
         exits = room.get("directions", {})
-        if not isinstance(exits, dict):
-            return "You cannot go that way", DIRECTION_MOVE_FAIL_CODE
-
         if direction not in exits:
             return "You cannot go that way", DIRECTION_MOVE_FAIL_CODE
 
         next_room_name = exits[direction]
-
         target = self.world.get(next_room_name)
-        if target is None or not isinstance(target, dict):
+
+        if target is None:
             return "You cannot go that way", DIRECTION_MOVE_FAIL_CODE
 
         needed_item = target.get("needed_item", "")
 
+        # Handle rooms that require an item
         if needed_item:
             if self.has_item(needed_item):
                 self.current_room = next_room_name
             else:
                 room_items = room.get("items", {})
+                # Allow entry if the required item is in the room and non‑collectible
                 if (
                     isinstance(room_items, dict)
                     and needed_item in room_items
@@ -60,35 +65,30 @@ class GameState:
         else:
             self.current_room = next_room_name
 
-        if bool(target.get("end_game", False)):
+        # End‑game room
+        if target.get("end_game", False):
             return f"{target.get('description', '')} (Game over)", DIRECTION_GAME_OVER_CODE
 
         return f"In {next_room_name}", DIRECTION_SUCCESS_CODE
 
     def look(self) -> str:
-        """
-        Returns a description of the current room, items, and exits.
-        Text preserved exactly as you wrote it.
-        """
+        """Returns the room description, items, and exits."""
         room = self.world.get(self.current_room, {})
         desc = room.get("description", "")
 
         items = room.get("items", {})
-        if isinstance(items, dict) and items:
-            item_list = ",".join(items.keys())
-        else:
-            item_list = "empty"
+        item_list = ",".join(items.keys()) if items else "empty"
 
         exits = room.get("directions", {})
-        if isinstance(exits, dict) and exits:
-            exit_list = ",".join(exits.keys())
-        else:
-            exit_list = "none"
+        exit_list = ",".join(exits.keys()) if exits else "none"
 
         return f"{desc}\nItems are: {item_list}\nExits: {exit_list}"
 
     def show_inventory(self) -> str:
+        """Returns a formatted inventory list."""
         return "Inventory- " + (",".join(self.inventory) if self.inventory else "empty")
+
+    # Inventory wrappers
 
     def add_item(self, item):
         return AddItem(self.inventory, item)
@@ -105,7 +105,9 @@ class GameState:
         return DropItem(room, self.inventory, item)
 
     def has_item(self, item):
+        """Checks if the player has a specific item."""
         return InventoryContains(self.inventory, item)
+
 
 
 

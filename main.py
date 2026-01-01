@@ -13,7 +13,6 @@ def main() -> None:
 
 def game_loop(game_state: GameState) -> None:
     game_active: bool = True
-
     while game_active:
         print(game_state.look())
         # Take input here
@@ -25,15 +24,18 @@ def game_loop(game_state: GameState) -> None:
             case "VIEW_INV":
                 print(game_state.show_inventory())
             case "PICK_ITEM":
-                pass
+                # choice [1] in this case should be a string item name
+                if len(choice) >= 2:
+                    game_state.pick_up(choice[1])
             case "DROP_ITEM":
-                pass
+                if len(choice) >= 2:
+                    game_state.drop(choice[1])
 
 
 def get_move_room(game_state: GameState) -> bool:  # returns bool if breaking game loop
     while True:
         # get input of chosen direction
-        chosen_dir: str = input()  # placeholder
+        chosen_dir: str = input("Choose direction: ")  # placeholder?
         
         if chosen_dir.upper() == "BACK":
             return True  # indicate the the player doesnt want to move, go back to main

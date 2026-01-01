@@ -23,7 +23,7 @@ def load_json_file(file_loc: str) -> dict:
 
 
 def is_game_data_valid(game_data: dict) -> bool:  # this returns bool for if the data is valid
-    valid_room_data_keys: list[str] = ["description", "end_game", "items", "directions"]
+    valid_room_data_keys: list[str] = ["description", "end_game", "items", "directions", "needed_item"]
     valid_item_data_keys: list[str] = ["description", "collectible"]
 
     if len(game_data) == 0:

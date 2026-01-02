@@ -37,6 +37,10 @@ def is_game_data_valid(game_data: dict) -> bool:  # this returns bool for if the
             if not room_key in valid_room_data_keys:
                 print(f"Room key {room_key} not valid")
                 return False
+        
+        if len(game_data[room]) < len(valid_room_data_keys):
+            print("A needed room key is missing!")
+            return False
             
         for item_val in game_data[room]["items"].values():
             if not isinstance(item_val, dict):
@@ -47,5 +51,10 @@ def is_game_data_valid(game_data: dict) -> bool:  # this returns bool for if the
                 if not item_key in valid_item_data_keys:
                     print(f"Item key {item_key} is not  valid")
                     return False
+            
+            if len(item_val) < len(valid_item_data_keys):
+                print("Needed item key is missing!")
+                return False
     return True
+
 

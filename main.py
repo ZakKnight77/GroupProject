@@ -105,8 +105,8 @@ def print_help() -> None:
     """Displays the available player commands."""
     print(
         "Available commands:\n"
-        "  go <direction>     - Move in a direction\n"
-        "  pick <item>        - Pick up an item\n"
+        "  go <direction>     - Move (also: move, direction). Example: go north\n"
+        "  pick <item>        - Pick up an item (also: get). Example: get key\n"
         "  drop <item>        - Drop an item\n"
         "  inventory          - View your inventory\n"
         "  look               - Look around the room\n"
@@ -117,5 +117,6 @@ def print_help() -> None:
 
 if __name__ == "__main__":
     main()
+
 
 
